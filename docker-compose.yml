@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  app-stable:
+    image: nginx:alpine
+    volumes:
+      - ./app-stable:/usr/share/nginx/html
+    networks:
+      - canary-net
+
+  app-canary:
+    image: nginx:alpine
+    volumes:
+      - ./app-canary:/usr/share/nginx/html
+    networks:
+      - canary-net
+
+  nginx:
+    image: nginx:alpine
+    volumes:
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
+    ports:
+      - "8080:80"
+    depends_on:
+      - app-stable
+      - app-canary
+    networks:
+      - canary-net
+
+networks:
+  canary-net:
+
